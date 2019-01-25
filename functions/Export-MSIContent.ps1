@@ -1,4 +1,4 @@
-Function Extract-MsiContent {
+Function Export-MsiContent {
     [CmdletBinding()]
     param
     (
