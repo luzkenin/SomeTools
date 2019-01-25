@@ -1,4 +1,4 @@
-Function Export-MsiContent {
+Function Export-ADMXTemplates {
     [CmdletBinding()]
     param
     (
@@ -7,7 +7,7 @@ Function Export-MsiContent {
         [ValidateScript({Test-Path $_})]
         [ValidateScript({$_.EndsWith(".msi")})]
         [String]$MsiPath,
-        [Parameter(Position=1)]
+        [Parameter(Mandatory,Position=1)]
         [String]$TargetDirectory
     )
 
@@ -21,9 +21,28 @@ Function Export-MsiContent {
             $TargetDirectory = Join-Path $currentDir "Temp"
         }
     
-        $MsiPath = Resolve-Path $MsiPath
+        try {
+            [string]$MsiPath = Resolve-Path $MsiPath | select -ExpandProperty Path
+        }
+        catch {
+            throw $_
+        }
+        try {
+            [string]$TargetDirectory = Resolve-Path $TargetDirectory | select -ExpandProperty Path
+        }
+        catch {
+            throw $_
+        }
+        
         Write-Verbose "Extracting the contents of $MsiPath to $TargetDirectory"
-        Start-Process "MSIEXEC" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
+        $ADMXInstallArgs = @(
+            "/a"
+            "`"$MSIPath`""
+            "/qn"
+            "TARGETDIR=`"$TargetDirectory`""
+        )
+
+        Start-Process "msiexec.exe" -ArgumentList $ADMXInstallArgs -Wait -NoNewWindow
     }
 
     end{
