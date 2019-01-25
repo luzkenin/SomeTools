@@ -10,15 +10,22 @@ Function Export-MsiContents {
         [Parameter(Position=1)]
         [String]$TargetDirectory
     )
-
-    if(-not($TargetDirectory))
-    {
-        $currentDir = [System.IO.Path]::GetDirectoryName($MsiPath)
-        Write-Warning "A target directory is not specified. The contents of the MSI will be extracted to the location, $currentDir\Temp"
-        $TargetDirectory = Join-Path $currentDir "Temp"
+    
+    begin{
     }
 
-    $MsiPath = Resolve-Path $MsiPath
-    Write-Verbose "Extracting the contents of $MsiPath to $TargetDirectory"
-    Start-Process "MSIEXEC" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
+    process{
+        if(-not($TargetDirectory)) {
+            $currentDir = [System.IO.Path]::GetDirectoryName($MsiPath)
+            Write-Warning "A target directory is not specified. The contents of the MSI will be extracted to the location, $currentDir\Temp"
+            $TargetDirectory = Join-Path $currentDir "Temp"
+        }
+    
+        $MsiPath = Resolve-Path $MsiPath
+        Write-Verbose "Extracting the contents of $MsiPath to $TargetDirectory"
+        Start-Process "MSIEXEC" -ArgumentList "/a $MsiPath /qn TARGETDIR=$TargetDirectory" -Wait -NoNewWindow
+    }
+
+    end{
+    }
 }
