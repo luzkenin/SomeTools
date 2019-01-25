@@ -36,6 +36,7 @@ Function Export-ADMXTemplatesFromMSI {
             "TARGETDIR=`"$TargetDirectory`""
         )
 
+        Write-Verbose "Extracting Policy Definitions to $TargetDirectory"
         $Extract = Start-Process "msiexec.exe" -ArgumentList $ADMXInstallArgs -Wait -NoNewWindow -PassThru
 
         $CatchExitCode = switch ($Extract.ExitCode) {
