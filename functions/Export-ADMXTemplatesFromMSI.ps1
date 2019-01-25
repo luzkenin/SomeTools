@@ -1,4 +1,4 @@
-Function Export-ADMXTemplates {
+Function Export-ADMXTemplatesFromMSI {
     [CmdletBinding()]
     param
     (
@@ -15,12 +15,6 @@ Function Export-ADMXTemplates {
     }
 
     process{
-        if(-not($TargetDirectory)) {
-            $currentDir = [System.IO.Path]::GetDirectoryName($MsiPath)
-            Write-Warning "A target directory is not specified. The contents of the MSI will be extracted to the location, $currentDir\Temp"
-            $TargetDirectory = Join-Path $currentDir "Temp"
-        }
-    
         try {
             [string]$MsiPath = Resolve-Path $MsiPath | select -ExpandProperty Path
         }
@@ -42,7 +36,17 @@ Function Export-ADMXTemplates {
             "TARGETDIR=`"$TargetDirectory`""
         )
 
-        Start-Process "msiexec.exe" -ArgumentList $ADMXInstallArgs -Wait -NoNewWindow
+        $Extract = Start-Process "msiexec.exe" -ArgumentList $ADMXInstallArgs -Wait -NoNewWindow -PassThru
+
+        $CatchExitCode = switch ($Extract.ExitCode) {
+            0 { "Success" }
+            1 { "Failed" }
+            Default { "Unknown"}
+        }
+        [PSCustomObject]@{
+            Destination = "$TargetDirectory" + "PolicyDefinitions"
+            Result = $CatchExitCode
+        }
     }
 
     end{
