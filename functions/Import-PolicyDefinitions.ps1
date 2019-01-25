@@ -1,25 +1,25 @@
 function Import-PolicyDefinitions {
     <#
     .SYNOPSIS
-    Short description
+    Imports ADMX Policy definition files into the central store.
     
     .DESCRIPTION
     Long description
     
     .PARAMETER Destination
-    Parameter description
+    Destination of files. Defaults to central store
     
     .PARAMETER FromMSI
-    Parameter description
+    Extracts the ADMX files from the MSI and stores them in the user temp.
     
     .PARAMETER MSIPath
-    Parameter description
+    Path to MSI
     
     .PARAMETER Source
-    Parameter description
+    Path to Source files.
     
     .EXAMPLE
-    An example
+    Import-PolicyDefinitions -FromMSI -MSIPath '.\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi' -Verbose
     
     .NOTES
     General notes
@@ -95,9 +95,6 @@ function Import-PolicyDefinitions {
                 }
             }
         }
-        
-
-        #get-childitem "\\$env:USERDNSDOMAIN\sysvol\$env:USERDNSDOMAIN\Policies\"
     }
     
     end {
