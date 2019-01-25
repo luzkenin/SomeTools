@@ -1,8 +1,7 @@
-Function Export-MsiContents
-{
-       [CmdletBinding()]
-       param
-       (
+Function Export-MsiContents {
+    [CmdletBinding()]
+    param
+    (
         [Parameter(Mandatory, Position=0)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({Test-Path $_})]
@@ -10,7 +9,7 @@ Function Export-MsiContents
         [String]$MsiPath,
         [Parameter(Position=1)]
         [String]$TargetDirectory
-       )
+    )
 
     if(-not($TargetDirectory))
     {
