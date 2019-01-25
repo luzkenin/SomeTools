@@ -1,4 +1,4 @@
-Function Export-MsiContents {
+Function Extract-MsiContent {
     [CmdletBinding()]
     param
     (
@@ -10,7 +10,7 @@ Function Export-MsiContents {
         [Parameter(Position=1)]
         [String]$TargetDirectory
     )
-    
+
     begin{
     }
 
