@@ -2,9 +2,12 @@ function Import-PolicyDefinitions {
     <#
     .SYNOPSIS
     Imports ADMX Policy definition files into the central store.
-    
+        
     .DESCRIPTION
-    Long description
+    Imports ADMX Policy definition files into the central store.
+    
+    .PARAMETER Path
+    Path to Source files.
     
     .PARAMETER Destination
     Destination of files. Defaults to central store
@@ -15,11 +18,11 @@ function Import-PolicyDefinitions {
     .PARAMETER MSIPath
     Path to MSI
     
-    .PARAMETER Source
-    Path to Source files.
-    
     .EXAMPLE
     Import-PolicyDefinitions -FromMSI -MSIPath '.\Administrative Templates (.admx) for Windows 10 October 2018 Update.msi' -Verbose
+
+    .EXAMPLE
+    Import-PolicyDefinitions -Path .\PolicyDefinitions\ -Verbose
     
     .NOTES
     General notes
@@ -28,6 +31,9 @@ function Import-PolicyDefinitions {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param (
         # Parameter help description
+        [Parameter(ParameterSetName = 'FromSource')]
+        [string]$Path,
+        # Parameter help description
         [Parameter()]
         [ValidateScript({Test-Path $_})]
         [string]$Destination = "\\$env:USERDNSDOMAIN\sysvol\$env:USERDNSDOMAIN\Policies\",
@@ -35,11 +41,8 @@ function Import-PolicyDefinitions {
         [Parameter(ParameterSetName = 'MSI')]
         [switch]$FromMSI,
         # Parameter help description
-        [Parameter(ParameterSetName = 'MSI')]
-        [string]$MSIPath,
-        # Parameter help description
-        [Parameter(ParameterSetName = 'FromSource')]
-        [string]$Source
+        [Parameter(ParameterSetName = 'MSI', Mandatory)]
+        [string]$MSIPath
     )
     
     begin {
@@ -72,8 +75,6 @@ function Import-PolicyDefinitions {
                     }
                 }
             }
-            
-            #then copy from temp to policydef
         }
         else {
             if($null -eq (Test-Path -Path $Destination\PolicyDefinitions)) {
@@ -85,13 +86,13 @@ function Import-PolicyDefinitions {
                 }
                 Write-Verbose "Copying Policy Definitions to $Destination"
                 if($PSCmdlet.ShouldProcess("Copy","$Destiniation")) {
-                    Copy-Item -Path "$Source" -Destination $Destination -Recurse
+                    Copy-Item -Path "$Path" -Destination $Destination -Recurse
                 }
             }
             else {
                 Write-Verbose "Copying Policy Definitions to $Destination"
                 if($PSCmdlet.ShouldProcess("Copy","$Destiniation")) {
-                    Copy-Item -Path "$Source" -Destination $Destination -Recurse
+                    Copy-Item -Path "$Path" -Destination $Destination -Recurse
                 }
             }
         }
