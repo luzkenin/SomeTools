@@ -31,7 +31,8 @@ function Import-PolicyDefinitions {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param (
         # Parameter help description
-        [Parameter(ParameterSetName = 'FromSource')]
+        [Parameter(ParameterSetName = 'FromSource', Mandatory)]
+        [ValidateScript({Test-Path $_})]
         [string]$Path,
         # Parameter help description
         [Parameter()]
@@ -46,8 +47,6 @@ function Import-PolicyDefinitions {
     )
     
     begin {
-        
-        
     }
     
     process {
